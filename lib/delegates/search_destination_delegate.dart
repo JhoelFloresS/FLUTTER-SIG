@@ -1,4 +1,6 @@
+import 'package:app/blocs/blocs.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SearchDestinationDelegate extends SearchDelegate {
   SearchDestinationDelegate()
@@ -26,7 +28,28 @@ class SearchDestinationDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    return const Text('buildResults');
+    
+    final mapBloc = BlocProvider.of<MapBloc>(context);
+    mapBloc.getResultsByQuery(query);
+    
+    return BlocBuilder<MapBloc, MapState>(
+      builder: (context, state) {
+        final resultados = state.resultados;
+
+        return ListView.separated(
+          itemCount: resultados.length,
+          itemBuilder: (context, i ){
+            final resultado = resultados[i];
+            return ListTile(
+              title: Text( resultado["nombre_comercio"]),
+              subtitle: Text( resultado["direccion"]),
+              leading: const Icon( Icons.production_quantity_limits_rounded),
+            );
+          },
+          separatorBuilder: ( context, i) => const Divider(),
+        );
+      } 
+    );
   }
 
   @override

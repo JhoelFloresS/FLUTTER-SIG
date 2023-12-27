@@ -1,6 +1,8 @@
 import 'package:app/blocs/blocs.dart';
 import 'package:app/views/views.dart';
 import 'package:app/widgets/btn_location.dart';
+import 'package:app/widgets/btn_toggleView.dart';
+import 'package:app/widgets/btn_tracking.dart';
 import 'package:app/widgets/searchbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -142,18 +144,19 @@ class _HomeScreenState extends State<HomeScreen> {
               SpeedDialChild(
                 child: const Icon(Icons.shopping_bag_outlined),
                 label: 'Buscar Producto',
+                onTap: () {
+                  mapBloc.prueba();
+                }
               ),
               SpeedDialChild(
                 child: const Icon(Icons.shopping_cart_outlined),
                 label: 'Buscar Puesto',
               ),
-              SpeedDialChild(
-                child: const Icon(Icons.location_on_rounded),
-                label: 'Mercado',
-              ),
             ],
           ),
+          const BtnToogleView(),
           const BtnCurrentLocation(),
+          const BtnTracking()
         ],
       ),
     );

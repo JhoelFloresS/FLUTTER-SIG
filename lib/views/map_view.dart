@@ -36,12 +36,7 @@ class MapView extends StatelessWidget {
         onMapCreated: ( controller ) async{
           mapBloc.add( OnMapInitialized(controller));
         },
-        markers: <Marker>{Marker(markerId: const MarkerId('1'), position: initialLocation,
-          infoWindow: InfoWindow(
-            title: 'Puesto 1',
-            snippet: 'Puesto de comida',
-          )
-        )},
+        markers: Set<Marker>.of(mapBloc.state.markers),
         // geojson
         polygons: Set<Polygon>.of(polygons),
       ));

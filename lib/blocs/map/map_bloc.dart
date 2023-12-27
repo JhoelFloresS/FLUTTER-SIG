@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:app/providers/mercado.dart';
 import 'package:app/themes/main.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -13,10 +14,14 @@ part 'map_event.dart';
 part 'map_state.dart';
 
 class MapBloc extends Bloc<MapEvent, MapState> {
+
+  MercadoService mercadoService;
+
+
   List<Polygon> _polygons = [];
   GoogleMapController? _mapController;
 
-  MapBloc() : super(const MapState()) {
+  MapBloc({ required this.mercadoService}) : super(const MapState()) {
     on<OnMapInitialized>(_onInitMap);
     on<OnStartChargingPolygons>((event, emit) async {
       final List<Polygon> polygons = await loadPuestos();
@@ -27,6 +32,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
       ));
     });
     on<OnToggleViewCamera>(_handleToggeViewCamera);
+    on<OnNewResultsFound>(_handleNewResultsFound);
   }
 
   void _onInitMap(OnMapInitialized event, Emitter<MapState> emit) async {
@@ -76,6 +82,45 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     emit(state.copyWith(
       isOnViewWhole: !state.isOnViewWhole,
     ));
+    
+    if(state.isOnViewWhole){
+         const marker = Marker(markerId: MarkerId("mercadito-marker"),
+          position: LatLng(-17.725449054550545, -63.1480695049507),
+          infoWindow: InfoWindow(
+            title: "Mercado Nuevo Los Pozos"
+          )
+        );
+
+      emit(state.copyWith(
+        markers: [marker]
+      ));
+    } else {
+      emit(state.copyWith(
+        markers: []
+      ));
+    }
+   
+  }
+
+  void _handleNewResultsFound(OnNewResultsFound event, Emitter<MapState> emit){
+    emit(state.copyWith(resultados: event.resultados));
+
+    final resultadosQ = event.resultados;
+    const List<Marker> markers = [];
+    for (var element in resultadosQ) {
+      markers.add(
+        Marker(markerId: MarkerId(const Uuid().v4()),
+        position: LatLng(element["latitud"], element["longitud"]),
+        infoWindow: InfoWindow(
+          title: element["nombre_comercio"],
+          snippet: element["direccion"]
+        )
+        )
+      );
+    }
+
+    emit(state.copyWith(markers: markers));
+
   }
 
   void toggleMoveCamera() {
@@ -88,6 +133,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
           zoom: 13,
         ),
       );
+
     } else {
       cameraUpdate = CameraUpdate.newCameraPosition(
         const CameraPosition(
@@ -98,7 +144,27 @@ class MapBloc extends Bloc<MapEvent, MapState> {
       );
     }
 
-    _mapController?.animateCamera(cameraUpdate);
     add(OnToggleViewCamera());
+
+    Future.delayed(Duration(milliseconds: 500))
+        .then((_) {
+          _mapController?.animateCamera(cameraUpdate);
+          _mapController?.showMarkerInfoWindow(MarkerId("mercadito-marker"));
+        });
+
+    
   }
+
+
+  void prueba() async {
+    await mercadoService.searchStore("cajas");
+
+  }
+
+  void getResultsByQuery(String query) async {
+    final resultados = await mercadoService.searchStore(query); 
+    add( OnNewResultsFound( resultados ));
+  }
+
+
 }

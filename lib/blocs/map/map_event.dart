@@ -16,3 +16,10 @@ class OnMapInitialized extends MapEvent {
 class OnStartChargingPolygons extends MapEvent {}
 
 class OnToggleViewCamera extends MapEvent {}
+
+class OnNewResultsFound extends MapEvent{
+  final List resultados;
+
+  const OnNewResultsFound(this.resultados);
+}
+

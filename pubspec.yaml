@@ -45,6 +45,7 @@ dependencies:
   google_maps_flutter: ^2.5.0
   geojson: ^1.0.0
   flutter_speed_dial: ^7.0.0
+  http: ^1.1.2
 
 dev_dependencies:
   flutter_test:

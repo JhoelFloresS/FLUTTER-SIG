@@ -3,8 +3,8 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
 
-class BtnCurrentLocation extends StatelessWidget {
-  const BtnCurrentLocation({super.key});
+class BtnTracking extends StatelessWidget {
+  const BtnTracking({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,10 +18,11 @@ class BtnCurrentLocation extends StatelessWidget {
         maxRadius: 25,
         child: IconButton(
           icon: const Icon(
-            Icons.my_location_outlined,
+            Icons.track_changes,
             color: Colors.black87,
           ),
           onPressed: () {
+            mapBloc.toggleMoveCamera();
             // }
           },
         ),

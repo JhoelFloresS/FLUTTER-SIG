@@ -1,4 +1,5 @@
 import 'package:app/blocs/blocs.dart';
+import 'package:app/providers/mercado.dart';
 import 'package:app/screens/screens.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,7 @@ void main() {
     providers: [
       BlocProvider(create: (_) => GpsBloc()),
       BlocProvider(create: (_) => LocationBloc()),
-      BlocProvider(create: (_) => MapBloc()),
+      BlocProvider(create: (_) => MapBloc( mercadoService: MercadoService())),
     ],
     child: const AppState(),
   ));
